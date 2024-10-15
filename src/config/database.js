@@ -19,27 +19,23 @@ const client = new MongoClient(uri, {
 
 // let initialValues = [
 //     {
-//         id: 1,
 //         name: 'Fido',
 //         description: 'Um gato amigável e brincalhão.',
-//         imageUrl: '/images/dog1.jpg',
+//         imageUrl: 'https://images.unsplash.com/photo-1536590158209-e9d615d525e4?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
 //     },
 //     {
-//         id: 2,
 //         name: 'Whiskers',
 //         description: 'Um gato carinhoso e independente.',
-//         imageUrl: '/images/cat1.jpg',
+//         imageUrl: 'https://images.unsplash.com/photo-1548546738-8509cb246ed3?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
 //     },
 //     {
-//         id: 3,
 //         name: 'Garfield',
 //         description: 'Um gato preguiçoso.',
-//         imageUrl: '/images/dog2.jpg',
+//         imageUrl: 'https://plus.unsplash.com/premium_photo-1666612335748-d23dcba788e1?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
 //     },
 //     {
-//         id: 4,
 //         name: 'Mittens',
-//         description: 'Uma gata curiosa e energética.',
+//         description: 'https://plus.unsplash.com/premium_photo-1677545182067-26ac518ef64f?q=80&w=1912&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
 //         imageUrl: '/images/cat2.jpg',
 //     },
 // ];
@@ -53,11 +49,11 @@ async function run() {
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
 
         //Obtém uma referência para o banco de dados e a coleção específicos
-        const data = client.db(`${process.env.DATABASE_NAME}`);
-        const collection = data.collection(`${process.env.CATS_COLLECTION}`);
+        let data = client.db(`${process.env.DATABASE_NAME}`);
+        let collection = data.collection(`${process.env.CATS_COLLECTION}`);
 
         //Recupera todos os documentos da coleção e os coloca em um array (Confirmação)
-        const documents = await collection.find({}).toArray();
+        let documents = await collection.find({}).toArray();
         console.log("Documentos da coleção:");
         console.log(documents);
 
@@ -78,4 +74,22 @@ async function run() {
         await client.close();
     }
 }
+
+export async function getAnimalsList () {
+    try {
+        await client.connect()
+        await client.db("AcolhePET").command({ping: 1})
+        console.log("Conectado ao MongoDB.")
+
+        let data = client.db(`${process.env.DATABASE_NAME}`);
+        let collection = data.collection(`${process.env.CATS_COLLECTION}`);
+
+        return await collection.find({}).toArray();
+    } catch (e) {
+        console.log(e);
+    } finally {
+        await client.close()
+    }
+}
+
 run().catch(console.dir);
