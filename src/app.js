@@ -1,22 +1,16 @@
-const express = require('express')
+import express from 'express'
 let app = express()
-const cors = require('cors')
-const axios = require('axios')
-const dotenv = require('dotenv')
+import cors from 'cors'
+import axios from 'axios'
+import dotenv from 'dotenv'
+import adoptionRouter from './routes/adoption.js'
 
 dotenv.config()
 
-app.use(cors)
+app.use(cors())
+app.use(adoptionRouter)
 
-app.get('/api/home', async (req, res) => {
-    try {
-        const response = await axios.get(`${process.env.REACT_HOME_URL}`);
-        res.json(response.data);
-    } catch (error) {
-        console.error('Erro na chamada:', error);
-        res.status(500).send('Erro ao acessar a página do React');
-    }
-});
+//rota de pagina inicial não é necessária
 
 const PORT = parseInt(process.env.PORT) || 3000;
 app.listen(PORT, () => {

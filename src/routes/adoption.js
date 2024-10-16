@@ -1,17 +1,28 @@
-//adoption.js
+import express from 'express';
+import path from 'path';
+import { getAnimalsList } from '../config/database.js';
 
-const express = require('express')
-const path = require('path')
-let router = express.Router()
-let databaseRef = require('../config/database')
+const router = express.Router();
 
-router.get('/api/adoption', (req, res) => {
-    let animals = databaseRef.getAnimalsList()
-    res.json(animals)
+router.get('/api/animals', async (req, res) => {
+    try {
+        const animals = await getAnimalsList(); // Use await aqui
+        res.json(animals);
+    } catch (error) {
+        console.error('Erro ao obter a lista de animais:', error);
+        res.status(500).json({ message: 'Erro ao obter a lista de animais' });
+    }
+});
+
+router.put('/api/adoption/:id', async (req, res) => {
+    let id = req.params.id;
+    // Verificar
+    try {
+        await putAnimal();
+    } finally {
+        return res.json();
+    }
 })
 
-// router.post('/api/adoption', (err, req, res) => {
-//
-// })
 
-module.exports = router
+export default router;
