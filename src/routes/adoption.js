@@ -1,12 +1,12 @@
 import express from 'express';
 import path from 'path';
-import { getAnimalsList } from '../config/database.js';
+import {getAnimalsList, putAnimal} from '../config/database.js';
 
 const router = express.Router();
 
 router.get('/api/animals', async (req, res) => {
     try {
-        const animals = await getAnimalsList(); // Use await aqui
+        const animals = await getAnimalsList();
         res.json(animals);
     } catch (error) {
         console.error('Erro ao obter a lista de animais:', error);
@@ -14,15 +14,17 @@ router.get('/api/animals', async (req, res) => {
     }
 });
 
-router.put('/api/adoption/:id', async (req, res) => {
-    let id = req.params.id;
-    // Verificar
-    try {
-        await putAnimal();
-    } finally {
-        return res.json();
-    }
-})
 
+router.put('/api/adoption/:id', async (req, res) => {
+    const id = req.params.id;
+    const updateData = req.body; // Supondo que os dados a serem atualizados vêm do corpo da requisição
+
+    try {
+        const updatedAnimal = await putAnimal(id, updateData);
+        return res.json(updatedAnimal);
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+});
 
 export default router;

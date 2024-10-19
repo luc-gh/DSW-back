@@ -1,45 +1,47 @@
-import { MongoClient, ServerApiVersion } from 'mongodb';
+import mongoose from "mongoose";
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-const uri = `mongodb+srv://acolhepetoff:${process.env.DATABASE_PASSWORD}@cluster0.gobo7.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
+const uri = `mongodb+srv://acolhepetadmin:${process.env.DATABASE_PASSWORD}@acolhepet.cbjqm.mongodb.net/?retryWrites=true&w=majority&appName=AcolhePET`;
 
-const client = new MongoClient(uri, {
-    serverApi: {
-        version: ServerApiVersion.v1,
-        strict: true,
-        deprecationErrors: true,
-    },
-});
+const clientOptions = { serverApi: { version: '1', strict: true, deprecationErrors: true } };
+
+import Animal from '../models/Animal.js'; // Certifique-se de ajustar o caminho conforme necessário
 
 export async function getAnimalsList() {
     try {
-        await client.connect();
-        await client.db("AcolhePET").command({ ping: 1 });
-        console.log("Conectado ao MongoDB.");
-
-        const data = client.db(`${process.env.DATABASE_NAME}`);
-        const collection = data.collection(`${process.env.CATS_COLLECTION}`);
-
-        return await collection.find({}).toArray();
+        // A busca de todos os documentos na coleção 'animals' pode ser feita assim:
+        const animals = await Animal.find({});
+        console.log("Lista de animais obtida com sucesso.");
+        return animals;
     } catch (error) {
         console.error('Erro ao obter a lista de animais:', error);
         throw error; // Lança o erro para ser tratado no chamador
-    } finally {
-        await client.close();
     }
 }
 
+
 // Executar uma verificação de conexão (opcional)
-(async () => {
+export async function checkConnection() {
     try {
-        await client.connect();
-        await client.db("AcolhePET").command({ ping: 1 });
+        await mongoose.connection.db.admin().ping();
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
     } catch (error) {
         console.error('Erro ao conectar ao MongoDB:', error);
-    } finally {
-        await client.close();
     }
-})();
+}
+
+export async function putAnimal(id, updateData) {
+    try {
+        const updatedAnimal = await Animal.findByIdAndUpdate(id, updateData, { new: true });
+        if (!updatedAnimal) {
+            throw new Error("Animal não encontrado.");
+        }
+        console.log("Animal atualizado com sucesso:", updatedAnimal);
+        return updatedAnimal;
+    } catch (error) {
+        console.error('Erro ao atualizar o animal:', error);
+        throw error; // Lança o erro para ser tratado no chamador
+    }
+}
