@@ -1,13 +1,12 @@
 import mongoose from "mongoose";
 import dotenv from 'dotenv';
+import {Animal} from '../models/Animal.js';
 
 dotenv.config();
 
 const uri = `mongodb+srv://acolhepetadmin:${process.env.DATABASE_PASSWORD}@acolhepet.cbjqm.mongodb.net/?retryWrites=true&w=majority&appName=AcolhePET`;
 
 const clientOptions = { serverApi: { version: '1', strict: true, deprecationErrors: true } };
-
-import Animal from '../models/Animal.js'; // Certifique-se de ajustar o caminho conforme necessário
 
 export async function getAnimalsList() {
     try {

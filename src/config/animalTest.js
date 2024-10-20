@@ -1,20 +1,12 @@
 import mongoose from "mongoose";
 import dotenv from 'dotenv';
+import {Animal} from '../models/Animal.js';
 
 dotenv.config();
 
 const uri = `mongodb+srv://acolhepetadmin:${process.env.DATABASE_PASSWORD}@acolhepet.cbjqm.mongodb.net/animals?retryWrites=true&w=majority&appName=AcolhePET`;
 
 const clientOptions = { serverApi: { version: '1', strict: true, deprecationErrors: true } };
-
-const animalSchema = new mongoose.Schema({
-    id: { type: Number, required: true },
-    name: { type: String, required: true },
-    description: { type: String, required: true },
-    imageUrl: { type: String, required: true }
-}, {collection: 'general'});
-
-const Animal = mongoose.model('Animal', animalSchema);
 
 const animals = [
     {
