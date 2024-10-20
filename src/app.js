@@ -10,8 +10,6 @@ dotenv.config()
 app.use(cors())
 app.use(adoptionRouter)
 
-//rota de pagina inicial não é necessária
-
 const PORT = parseInt(process.env.PORT) || 3000;
 app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`);

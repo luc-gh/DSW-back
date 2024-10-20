@@ -4,19 +4,23 @@ import {Animal} from '../models/Animal.js';
 
 dotenv.config();
 
-const uri = `mongodb+srv://acolhepetadmin:${process.env.DATABASE_PASSWORD}@acolhepet.cbjqm.mongodb.net/?retryWrites=true&w=majority&appName=AcolhePET`;
+const uri = `mongodb+srv://acolhepetadmin:${process.env.DATABASE_PASSWORD}@acolhepet.cbjqm.mongodb.net/animals?retryWrites=true&w=majority&appName=AcolhePET`;
 
 const clientOptions = { serverApi: { version: '1', strict: true, deprecationErrors: true } };
 
 export async function getAnimalsList() {
     try {
-        // A busca de todos os documentos na coleção 'animals' pode ser feita assim:
-        const animals = await Animal.find({});
+        await mongoose.connect(uri, clientOptions);
+        await mongoose.connection.db.admin().ping();
+
+        const animals = await Animal.find();
         console.log("Lista de animais obtida com sucesso.");
         return animals;
     } catch (error) {
         console.error('Erro ao obter a lista de animais:', error);
-        throw error; // Lança o erro para ser tratado no chamador
+        throw error;
+    } finally {
+        await mongoose.disconnect();
     }
 }
 
